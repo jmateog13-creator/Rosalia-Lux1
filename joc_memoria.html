@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joc de Memòria: Rosalía's Mix</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --motomami-red: #d50000;
+            --lux-gold: #b38a55;
+            --bg-color: #f0f0f0;
+            --card-color: #ffffff;
+            --text-color: #1a1a1a;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            padding: 1rem;
+        }
+
+        .main-wrapper {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        #legend-container {
+            background-color: var(--card-color);
+            padding: 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            flex-shrink: 0;
+            width: 280px;
+        }
+
+        #legend-container h2 {
+            font-family: 'Anton', sans-serif;
+            text-align: center;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+            font-size: 1.5rem;
+        }
+
+        #legend-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        #legend-list li {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid #eee;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        
+        #legend-list li:last-child {
+            border-bottom: none;
+        }
+
+        #legend-list li .emoji {
+            font-size: 1.5rem;
+        }
+
+        .game-container {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        header h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: 3rem;
+            color: var(--motomami-red);
+        }
+        
+        header h1 span {
+            color: var(--lux-gold);
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .memory-game {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            max-width: 600px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            gap: 10px;
+            perspective: 1000px;
+        }
+
+        .memory-card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+        
+        .memory-card.matched {
+            animation: bounce 0.5s;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: rotateY(180deg) scale(1); }
+            50% { transform: rotateY(180deg) scale(1.1); }
+        }
+
+        .front-face, .back-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        .front-face {
+            background: linear-gradient(135deg, var(--motomami-red), var(--lux-gold));
+            font-size: 3rem;
+            color: white;
+            font-family: 'Anton', sans-serif;
+        }
+
+        .back-face {
+            background-color: var(--card-color);
+            transform: rotateY(180deg);
+            font-size: 2.5rem;
+            font-weight: 900;
+        }
+        
+        .back-face.is-emoji {
+            font-size: 3.5rem;
+        }
+
+        .end-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(240, 240, 240, 0.95);
+            z-index: 10;
+            display: none; /* Initially hidden */
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+        }
+         
+        .end-screen h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .end-screen p {
+            font-size: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        
+        #restart-btn {
+            padding: 1rem 2.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            background-color: var(--motomami-red);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        #restart-btn:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 900px) {
+            .main-wrapper {
+                flex-direction: column;
+                align-items: center;
+            }
+            #legend-container {
+                width: 100%;
+                max-width: 600px;
+                margin-bottom: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-wrapper">
+        <div id="legend-container">
+            <h2>Llegenda</h2>
+            <ul id="legend-list"></ul>
+        </div>
+        <div class="game-container">
+            <header>
+                <h1>Rosalía's <span>Memory Mix</span></h1>
+            </header>
+            <div class="stats">
+                <div id="moves">Moviments: 0</div>
+                <div id="timer">Temps: 0s</div>
+            </div>
+            <div class="memory-game"></div>
+        </div>
+    </div>
+    
+    <div id="end-screen" class="end-screen">
+        <h2>Has guanyat!</h2>
+        <p id="final-stats"></p>
+        <button id="restart-btn">Tornar a jugar</button>
+    </div>
+
+    <script>
+        const gameBoard = document.querySelector('.memory-game');
+        const movesEl = document.getElementById('moves');
+        const timerEl = document.getElementById('timer');
+        const endScreenEl = document.getElementById('end-screen');
+        const finalStatsEl = document.getElementById('final-stats');
+        const restartBtn = document.getElementById('restart-btn');
+        const legendList = document.getElementById('legend-list');
+
+        const cardData = [
+            { id: 1, content: 'MOTOMAMI', type: 'text' }, { id: 1, content: '🏍️', type: 'emoji' },
+            { id: 2, content: 'LUX', type: 'text' }, { id: 2, content: '💡', type: 'emoji' },
+            { id: 3, content: 'MÍSTICA', type: 'text' }, { id: 3, content: '🙏', type: 'emoji' },
+            { id: 4, content: 'MOTOR', type: 'text' }, { id: 4, content: '⚙️', type: 'emoji' },
+            { id: 5, content: 'COR', type: 'text' }, { id: 5, content: '🎶', type: 'emoji' },
+            { id: 6, content: 'ORQUESTRA', type: 'text' }, { id: 6, content: '🎻', type: 'emoji' },
+            { id: 7, content: 'VERMELL', type: 'text' }, { id: 7, content: '🟥', type: 'emoji' },
+            { id: 8, content: 'BLANC', type: 'text' }, { id: 8, content: '⬜️', type: 'emoji' }
+        ];
+
+        let hasFlippedCard = false;
+        let lockBoard = false;
+        let firstCard, secondCard;
+        let moves = 0;
+        let timer = 0;
+        let timerInterval = null;
+        let matchedPairs = 0;
+
+        function shuffle(array) {
+            array.sort(() => Math.random() - 0.5);
+        }
+        
+        function populateLegend() {
+            legendList.innerHTML = '';
+            const pairs = {};
+            cardData.forEach(item => {
+                if (!pairs[item.id]) {
+                    pairs[item.id] = {};
+                }
+                if (item.type === 'text') {
+                    pairs[item.id].text = item.content;
+                } else {
+                    pairs[item.id].emoji = item.content;
+                }
+            });
+
+            for (const id in pairs) {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <span>${pairs[id].text}</span>
+                    <span class="emoji">${pairs[id].emoji}</span>
+                `;
+                legendList.appendChild(li);
+            }
+        }
+
+
+        function createBoard() {
+            shuffle(cardData);
+            cardData.forEach(item => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.id = item.id;
+
+                card.innerHTML = `
+                    <div class="front-face">?</div>
+                    <div class="back-face ${item.type === 'emoji' ? 'is-emoji' : ''}">${item.content}</div>
+                `;
+                gameBoard.appendChild(card);
+                card.addEventListener('click', flipCard);
+            });
+        }
+
+        function startGame() {
+            // Reset game state
+            gameBoard.innerHTML = '';
+            endScreenEl.style.display = 'none';
+            moves = 0;
+            timer = 0;
+            matchedPairs = 0;
+            movesEl.textContent = `Moviments: ${moves}`;
+            timerEl.textContent = `Temps: ${timer}s`;
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timer++;
+                timerEl.textContent = `Temps: ${timer}s`;
+            }, 1000);
+            
+            populateLegend();
+            createBoard();
+        }
+
+        function flipCard() {
+            if (lockBoard) return;
+            if (this === firstCard) return;
+
+            this.classList.add('flip');
+
+            if (!hasFlippedCard) {
+                // First click
+                hasFlippedCard = true;
+                firstCard = this;
+            } else {
+                // Second click
+                secondCard = this;
+                moves++;
+                movesEl.textContent = `Moviments: ${moves}`;
+                checkForMatch();
+            }
+        }
+
+        function checkForMatch() {
+            let isMatch = firstCard.dataset.id === secondCard.dataset.id;
+            isMatch ? disableCards() : unflipCards();
+        }
+
+        function disableCards() {
+            firstCard.removeEventListener('click', flipCard);
+            secondCard.removeEventListener('click', flipCard);
+            firstCard.classList.add('matched');
+            secondCard.classList.add('matched');
+            
+            matchedPairs++;
+            if (matchedPairs === cardData.length / 2) {
+                endGame();
+            }
+
+            resetBoard();
+        }
+
+        function unflipCards() {
+            lockBoard = true;
+            setTimeout(() => {
+                firstCard.classList.remove('flip');
+                secondCard.classList.remove('flip');
+                resetBoard();
+            }, 1200);
+        }
+
+        function resetBoard() {
+            [hasFlippedCard, lockBoard] = [false, false];
+            [firstCard, secondCard] = [null, null];
+        }
+
+        function endGame() {
+            clearInterval(timerInterval);
+            finalStatsEl.textContent = `L'has completat en ${moves} moviments i ${timer} segons!`;
+            endScreenEl.style.display = 'flex';
+        }
+
+        restartBtn.addEventListener('click', startGame);
+
+        startGame();
+    </script>
+</body>
+</html>
+
+
+
+

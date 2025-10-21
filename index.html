@@ -18,6 +18,8 @@
             --correct-color: #2e7d32;
             --incorrect-color: #c62828;
             --quiz-bg-color: #f5f5f5; /* Color de fons per al qüestionari */
+            --lux-gold: #b38a55;
+            --lux-blue: #5d9cec;
         }
 
         body {
@@ -131,20 +133,18 @@
             margin-bottom: 0.7rem;
         }
         
-        /* Secció del Joc */
-        #game-link-section {
+        /* Secció del Joc i Activitat */
+        .extra-activity-section {
             text-align: center;
             padding: 3rem 1rem;
-            margin-top: 4rem; /* Augmentat el marge superior */
-            background-color: #1a1a1a;
-            color: white;
+            margin-top: 2rem;
             border-radius: 8px;
         }
 
-        #game-link-section h2 {
+        .extra-activity-section h2 {
              font-family: var(--sans-serif-font);
         }
-
+        
         .game-button {
             display: inline-block;
             margin-top: 1rem;
@@ -153,18 +153,56 @@
             font-size: 1.2rem;
             font-weight: 700;
             color: white;
-            background: linear-gradient(45deg, #d50000, #e53935);
             border: none;
             border-radius: 50px;
             cursor: pointer;
             text-decoration: none;
             transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 15px rgba(213, 0, 0, 0.4);
         }
-        .game-button:hover {
+        
+        #memory-game-link-section {
+            background-color: #333;
+            color: white;
+        }
+
+        #memory-game-link-section .game-button {
+            background: linear-gradient(45deg, #434343, #000000);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+        }
+        #memory-game-link-section .game-button:hover {
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(213, 0, 0, 0.5);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
         }
+
+        #timeline-game-link-section {
+            background-color: #e9e9e9;
+            color: var(--text-color);
+        }
+
+        #timeline-game-link-section .game-button {
+            color: var(--text-color);
+            background: linear-gradient(45deg, #ffffff, #e0e0e0);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        #timeline-game-link-section .game-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        #activity-link-section {
+            background-color: #f4f7f9;
+            color: var(--text-color);
+        }
+
+        #activity-link-section .game-button {
+            background: linear-gradient(45deg, var(--lux-blue), var(--lux-gold));
+            box-shadow: 0 4px 15px rgba(93, 156, 236, 0.4);
+        }
+        #activity-link-section .game-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(93, 156, 236, 0.5);
+        }
+
 
         /* Estils del qüestionari */
         #quiz-section {
@@ -242,7 +280,7 @@
                 margin: 1rem;
                 padding: 1.5rem;
             }
-            #quiz-section {
+            #quiz-section, .extra-activity-section {
                 padding: 1.5rem;
             }
         }
@@ -400,10 +438,22 @@
             <div id="results"></div>
         </section>
         
-        <section id="game-link-section">
-            <h2>Vols més? Prova el nostre joc!</h2>
-            <p>Posa a prova els teus coneixements sobre l'univers Rosalía.</p>
-            <a href="motomamivslux.html" target="_blank" class="game-button">Juga a MOTOMAMI vs LUX</a>
+        <section id="memory-game-link-section" class="extra-activity-section">
+            <h2>Posa a prova la teva memòria</h2>
+            <p>Troba les parelles de paraules i emojis relacionats amb Rosalía.</p>
+            <a href="joc_memoria.html" target="_blank" class="game-button">Rosalía's Memory Mix</a>
+        </section>
+
+        <section id="timeline-game-link-section" class="extra-activity-section">
+            <h2>Ordena la seva discografia</h2>
+            <p>Arrossega cada cançó al seu àlbum corresponent en la línia del temps.</p>
+            <a href="joc_timeline.html" target="_blank" class="game-button">La Línia del Temps</a>
+        </section>
+
+        <section id="activity-link-section" class="extra-activity-section">
+            <h2>Vols investigar més?</h2>
+            <p>Converteix-te en un periodista musical i analitza les col·laboracions de LUX.</p>
+            <a href="activitat_investigacio.html" target="_blank" class="game-button">Fes d'Investigador/a Musical</a>
         </section>
 
     </div>

@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Activitat: Investigador/a Musical</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f4f7f9; /* Un blanco roto muy claro */
+            --card-bg: #ffffff;
+            --text-color: #2c3e50; /* Un gris oscuro azulado */
+            --primary-color: #b38a55; /* Dorado */
+            --secondary-color: #5d9cec; /* Azul claro */
+            --border-color: #e0e0e0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.7;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        header h1 {
+            font-size: 2.8rem;
+            font-weight: 900;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            font-size: 1.1rem;
+            color: #7f8c8d;
+        }
+
+        .tools-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .tools-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .tools-box ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        
+        .step-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            padding: 2rem;
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+        
+        .step-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .step-number {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--secondary-color);
+            line-height: 1;
+        }
+
+        .step-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+        
+        .step-content p, .step-content ol {
+            color: #7f8c8d;
+        }
+
+        .step-content ol {
+            padding-left: 1.2rem;
+        }
+        
+        .extra-section {
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .collaborators-list {
+            margin-top: 0;
+            margin-bottom: 3rem;
+            padding-top: 0;
+            border-top: none;
+        }
+        
+        .extra-section h2 {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            color: var(--primary-color);
+            font-size: 1.8rem;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        #collaborators-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        
+        #collaborators-bank span {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        #adjective-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            justify-content: center;
+        }
+        
+        #adjective-bank span {
+            background-color: #ecf0f1;
+            color: #34495e;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 1rem; }
+            header h1 { font-size: 2.2rem; }
+            .step-card { flex-direction: column; gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Missió: Descobreix el so de 'LUX'</h1>
+            <p class="subtitle">Converteix-te en un/a periodista musical i analitza les col·laboracions de Rosalía</p>
+        </header>
+
+        <main>
+            <div class="tools-box">
+                <h2>Eines Necessàries</h2>
+                <ul>
+                    <li>🎨 Canva</li>
+                    <li>▶️ YouTube</li>
+                </ul>
+            </div>
+
+            <div class="extra-section collaborators-list">
+                <h2>Artistes Col·laboradores</h2>
+                <div class="card">
+                   <div id="collaborators-bank">
+                       <span>Björk</span> <span>Sílvia Pérez Cruz</span> <span>Estrella Morente</span>
+                       <span>Carminho</span> <span>Yahritza</span> <span>Yves Tumor</span>
+                       <span>Escolania de Montserrat</span>
+                   </div>
+                </div>
+            </div>
+
+            <div class="steps-container">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <div class="step-content">
+                        <h3>Tria les teves artistes</h3>
+                        <p>De la llista d'artistes que tens a sobre, <strong>tria'n 4</strong> que et cridin l'atenció.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <div class="step-content">
+                        <h3>Prepara el teu document a Canva</h3>
+                        <ol>
+                            <li>Ves a Canva i tria un format ("Infografia", "Pòster"...).</li>
+                            <li>Posa-li un títol original al teu disseny.</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <div class="step-content">
+                        <h3>Fes d'investigador/a a YouTube</h3>
+                        <p>Busca cada artista a YouTube i escolta un fragment d'alguna cançó seva per captar-ne l'estil. Tria la que més et representi.</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <div class="step-content">
+                        <h3>Munta la teva fitxa a Canva</h3>
+                        <p>Per cada artista, afegeix-hi el seu nom, una foto, el títol de la cançó i, el més important: <strong>defineix el seu estil en 2 adjectius</strong> (Ex: <em>electrònica, tradicional, fosca, èpica...</em>).</p>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-number">5</div>
+                    <div class="step-content">
+                        <h3>Comparteix la teva creació!</h3>
+                        <p>Quan acabis, descarrega la teva fitxa en format PDF i ja la tindràs a punt per entregar.</p>
+                    </div>
+                </div>
+            </div>
+            
+             <div class="extra-section">
+                <h2 class="section-title">Banc d'Adjectius (Idees)</h2>
+                <div class="card">
+                   <div id="adjective-bank">
+                       <span>Èpica</span> <span>Melancòlica</span> <span>Alegre</span>
+                       <span>Fosca</span> <span>Misteriosa</span> <span>Íntima</span>
+                       <span>Potent</span> <span>Enèrgica</span> <span>Nostàlgica</span>
+                       <span>Relaxant</span> <span>Tensa</span> <span>Solemne</span>
+                       <span>Acústica</span> <span>Electrònica</span> <span>Orquestral</span>
+                       <span>Minimalista</span> <span>Clàssica</span> <span>Tradicional</span>
+                       <span>Experimental</span> <span>Lenta</span> <span>Ràpida</span>
+                       <span>Repetitiva</span> <span>Suau</span> <span>Rítmica</span> <span>Avantguardista</span>
+                   </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+</body>
+</html>
+

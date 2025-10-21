@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joc: La Línia del Temps de Rosalía</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Baskerville:ital@1&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --emq-color: #c09f80; /* Un to terra/daurat antic */
+            --motomami-color: #d50000;
+            --lux-color: #b38a55;
+            --bg-color: #e9e9e9;
+            --card-bg: #ffffff;
+            --text-color: #1a1a1a;
+            --correct-color: #4CAF50;
+            --incorrect-color: #F44336;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: var(--bg-color);
+            padding: 1rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        header h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: 3rem;
+            color: var(--text-color);
+            margin-bottom: 0.5rem;
+        }
+        
+        header .instructions {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 600px;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-top: 1rem;
+        }
+
+        #lives {
+            font-size: 1.5rem;
+            color: var(--motomami-color);
+        }
+
+        #song-container {
+            margin-bottom: 2rem;
+            padding: 1rem;
+            height: 120px; /* Fixed height to avoid layout shift */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .song-title {
+            background-color: var(--card-bg);
+            padding: 1.5rem 3rem;
+            border-radius: 10px;
+            font-size: 1.8rem;
+            font-weight: 900;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.2s;
+        }
+        
+        .song-title:active {
+            cursor: grabbing;
+            transform: scale(1.05);
+        }
+
+        .timeline-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            width: 100%;
+            max-width: 1200px;
+            height: 50vh;
+        }
+
+        .album-zone {
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .album-zone.drag-over {
+            transform: scale(1.02);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+        }
+
+        .album-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .album-year {
+            font-family: 'Libre Baskerville', serif;
+            font-style: italic;
+            margin-bottom: 1rem;
+        }
+
+        .songs-list {
+            list-style: none;
+            padding: 0;
+            width: 100%;
+            flex-grow: 1;
+            background: rgba(255,255,255,0.3);
+            border-radius: 10px;
+            padding: 0.5rem;
+            overflow-y: auto;
+        }
+        
+        .songs-list li {
+            background: var(--card-bg);
+            padding: 0.5rem;
+            margin-bottom: 0.5rem;
+            border-radius: 5px;
+            font-weight: 700;
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Album specific styles */
+        #emq-zone { background-color: #fdf6e3; border: 3px solid var(--emq-color); }
+        #emq-zone .album-title { color: var(--emq-color); }
+
+        #motomami-zone { background-color: #212121; border: 3px solid var(--motomami-color); color: white; }
+        #motomami-zone .album-title { color: var(--motomami-color); }
+
+        #lux-zone { background-color: #e3f2fd; border: 3px solid var(--lux-color); }
+        #lux-zone .album-title { color: var(--lux-color); }
+        
+        .feedback {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 700;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+            z-index: 100;
+        }
+        
+        .feedback.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(-20px);
+        }
+        
+        .feedback.correct { background-color: var(--correct-color); }
+        .feedback.incorrect { background-color: var(--incorrect-color); }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>La Línia del Temps de Rosalía</h1>
+        <p class="instructions">Arrossega cada cançó a l'àlbum correcte per ordenar la discografia de Rosalía.</p>
+        <div class="stats-container">
+            <div id="score">Punts: 0</div>
+            <div id="progress">Cançó: 1 / 15</div>
+            <div id="lives">❤️❤️❤️</div>
+        </div>
+    </header>
+
+    <div id="song-container">
+        <div id="current-song" class="song-title" draggable="true"></div>
+    </div>
+
+    <div class="timeline-container">
+        <div id="emq-zone" class="album-zone" data-album="emq">
+            <h2 class="album-title">El Mal Querer</h2>
+            <p class="album-year">2018</p>
+            <ul id="emq-list" class="songs-list"></ul>
+        </div>
+        <div id="motomami-zone" class="album-zone" data-album="motomami">
+            <h2 class="album-title">MOTOMAMI</h2>
+            <p class="album-year">2022</p>
+            <ul id="motomami-list" class="songs-list"></ul>
+        </div>
+        <div id="lux-zone" class="album-zone" data-album="lux">
+            <h2 class="album-title">LUX</h2>
+            <p class="album-year">2025</p>
+            <ul id="lux-list" class="songs-list"></ul>
+        </div>
+    </div>
+    
+    <div id="feedback" class="feedback"></div>
+
+    <script>
+        const songs = [
+            // El Mal Querer
+            { title: 'MALAMENTE', album: 'emq' },
+            { title: 'PIENSO EN TU MIRÁ', album: 'emq' },
+            { title: 'BAGDAD', album: 'emq' },
+            { title: 'DI MI NOMBRE', album: 'emq' },
+            { title: 'DE AQUÍ NO SALES', album: 'emq' },
+            // MOTOMAMI
+            { title: 'SAOKO', album: 'motomami' },
+            { title: 'CHICKEN TERIYAKI', album: 'motomami' },
+            { title: 'BIZCOCHITO', album: 'motomami' },
+            { title: 'LA FAMA', album: 'motomami' },
+            { title: 'LA COMBI VERSACE', album: 'motomami' },
+            // LUX
+            { title: 'SEXO, VIOLENCIA Y LLANTAS', album: 'lux' },
+            { title: 'DIOS ES UN STALKER', album: 'lux' },
+            { title: 'NOVIA ROBOT', album: 'lux' },
+            { title: 'LA RUMBA DEL PERDÓN', album: 'lux' },
+            { title: 'MAGNOLIAS', album: 'lux' }
+        ].sort(() => Math.random() - 0.5);
+
+        let currentSongIndex = 0;
+        let score = 0;
+        let lives = 3;
+
+        const currentSongEl = document.getElementById('current-song');
+        const albumZones = document.querySelectorAll('.album-zone');
+        const scoreEl = document.getElementById('score');
+        const progressEl = document.getElementById('progress');
+        const livesEl = document.getElementById('lives');
+        const feedbackEl = document.getElementById('feedback');
+        
+        function displayNextSong() {
+            if (lives <= 0) return;
+
+            if (currentSongIndex < songs.length) {
+                currentSongEl.textContent = songs[currentSongIndex].title;
+                progressEl.textContent = `Cançó: ${currentSongIndex + 1} / ${songs.length}`;
+            } else {
+                endGame(true);
+            }
+        }
+        
+        function updateScore(points) {
+            score += points;
+            scoreEl.textContent = `Punts: ${score}`;
+        }
+
+        function updateLives() {
+            lives--;
+            livesEl.textContent = '❤️'.repeat(lives);
+            if (lives <= 0) {
+                endGame(false);
+            }
+        }
+        
+        function endGame(isWinner) {
+             currentSongEl.style.display = 'none';
+             if (isWinner) {
+                showFeedback(true, `Joc completat! Puntuació final: ${score}`);
+             } else {
+                showFeedback(false, `T'has quedat sense vides! Puntuació: ${score}`);
+             }
+        }
+
+        function showFeedback(isCorrect, message) {
+            feedbackEl.textContent = message || (isCorrect ? 'Correcte!' : 'Incorrecte!');
+            feedbackEl.className = `feedback show ${isCorrect ? 'correct' : 'incorrect'}`;
+            setTimeout(() => {
+                feedbackEl.classList.remove('show');
+            }, 1500);
+        }
+
+        currentSongEl.addEventListener('dragstart', e => {
+            e.dataTransfer.setData('text/plain', songs[currentSongIndex].album);
+        });
+
+        albumZones.forEach(zone => {
+            zone.addEventListener('dragover', e => {
+                e.preventDefault();
+                if (lives > 0) zone.classList.add('drag-over');
+            });
+            zone.addEventListener('dragleave', () => {
+                zone.classList.remove('drag-over');
+            });
+            zone.addEventListener('drop', e => {
+                if (lives <= 0) return;
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+                const droppedAlbum = zone.dataset.album;
+                const correctAlbum = songs[currentSongIndex].album;
+                
+                if (droppedAlbum === correctAlbum) {
+                    updateScore(10);
+                    showFeedback(true);
+                    
+                    const list = document.getElementById(`${correctAlbum}-list`);
+                    const li = document.createElement('li');
+                    li.textContent = songs[currentSongIndex].title;
+                    list.appendChild(li);
+
+                    currentSongIndex++;
+                    displayNextSong();
+                } else {
+                    showFeedback(false);
+                    updateLives();
+                }
+            });
+        });
+
+        displayNextSong();
+    </script>
+</body>
+</html>
+
