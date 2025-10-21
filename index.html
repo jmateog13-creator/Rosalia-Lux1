@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width-device-width, initial-scale=1.0">
+    <title>Rolling Stone | Tot sobre 'LUX' de Rosalía</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rolling-stone-red: #d50000;
+            --text-color: #1a1a1a;
+            --background-color: #fdfdfd;
+            --serif-font: 'Libre Baskerville', serif;
+            --sans-serif-font: 'Montserrat', sans-serif;
+            --logo-font: 'Anton', sans-serif;
+            --correct-color: #2e7d32;
+            --incorrect-color: #c62828;
+            --quiz-bg-color: #f5f5f5; /* Color de fons per al qüestionari */
+        }
+
+        body {
+            font-family: var(--serif-font);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .magazine-container {
+            max-width: 800px;
+            width: 100%;
+            margin: 2rem;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 2px solid var(--text-color);
+            padding-bottom: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-family: var(--logo-font);
+            font-size: 5rem;
+            color: var(--rolling-stone-red);
+            letter-spacing: 2px;
+            margin: 0;
+            text-shadow: 2px 2px 3px rgba(0,0,0,0.2);
+        }
+
+        .edition-info {
+            font-family: var(--sans-serif-font);
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        article h1 {
+            font-family: var(--sans-serif-font);
+            font-size: 3.5rem;
+            font-weight: 900;
+            text-align: left;
+            margin-bottom: 1rem;
+            line-height: 1.1;
+        }
+
+        .subtitle {
+            font-family: var(--serif-font);
+            font-style: italic;
+            font-size: 1.3rem;
+            color: #555;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .byline {
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .article-content {
+            column-count: 1;
+        }
+
+        .article-content p {
+            margin-top: 0;
+            text-align: justify;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content p:first-of-type::first-letter {
+            font-family: var(--logo-font);
+            float: left;
+            font-size: 7rem;
+            line-height: 0.8;
+            padding: 0.5rem 0.6rem 0.2rem 0;
+            color: var(--rolling-stone-red);
+        }
+
+        h2.section-title {
+            font-family: var(--sans-serif-font);
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 0.5rem;
+        }
+        
+        .tracklist {
+            list-style-type: decimal;
+            padding-left: 1.5rem;
+            font-family: var(--sans-serif-font);
+            font-weight: 700;
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .tracklist li {
+            margin-bottom: 0.7rem;
+        }
+        
+        /* Secció del Joc */
+        #game-link-section {
+            text-align: center;
+            padding: 3rem 1rem;
+            margin-top: 4rem; /* Augmentat el marge superior */
+            background-color: #1a1a1a;
+            color: white;
+            border-radius: 8px;
+        }
+
+        #game-link-section h2 {
+             font-family: var(--sans-serif-font);
+        }
+
+        .game-button {
+            display: inline-block;
+            margin-top: 1rem;
+            padding: 1rem 2.5rem;
+            font-family: var(--sans-serif-font);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, #d50000, #e53935);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(213, 0, 0, 0.4);
+        }
+        .game-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(213, 0, 0, 0.5);
+        }
+
+        /* Estils del qüestionari */
+        #quiz-section {
+            margin-top: 4rem;
+            border-top: 2px solid var(--text-color);
+            padding: 2.5rem; 
+            background-color: var(--quiz-bg-color); 
+            border-radius: 8px; 
+        }
+        .question-block {
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        .question-block p {
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+        .question-block label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: normal;
+        }
+        input[type="text"] {
+            border: none;
+            border-bottom: 2px solid #ccc;
+            font-size: 1rem;
+            padding: 0.3rem;
+            background-color: transparent;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            border-bottom: 2px solid var(--rolling-stone-red);
+        }
+        
+        #submit-btn {
+            display: block;
+            margin: 2rem auto 0 auto;
+            padding: 1rem 2.5rem;
+            font-family: var(--sans-serif-font);
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            background-color: var(--rolling-stone-red);
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #submit-btn:hover {
+            background-color: #a00000;
+        }
+
+        #results {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            border-radius: 5px;
+        }
+
+        .correct {
+            color: var(--correct-color);
+            font-weight: bold;
+        }
+        .incorrect {
+            color: var(--incorrect-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            article h1 {
+                font-size: 2.8rem;
+            }
+             .magazine-container {
+                margin: 1rem;
+                padding: 1.5rem;
+            }
+            #quiz-section {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="magazine-container">
+        <header>
+            <h1 class="logo">ROLLING STONE</h1>
+            <p class="edition-info">Edició Catalunya | Música | Reportatges</p>
+        </header>
+
+        <article>
+            <h1>Rosalía ho canvia tot: Descobrim 'LUX'</h1>
+            <p class="subtitle">L'artista deixa enrere 'MOTOMAMI' per un so més tranquil i misteriós. T'expliquem tot el que se sap del seu nou disc.</p>
+            <p class="byline">Per Jordi Fortuny, Redactor de Música</p>
+
+            <div class="article-content">
+                <p>
+                    Rosalía ha sorprès a tothom anunciant per sorpresa el seu nou disc. Es diu <strong>‘LUX’</strong> i sortirà el pròxim <strong>7 de novembre</strong>. Amb aquest llançament, diu adeu al soroll de *MOTOMAMI* i busca una <strong>música més tranquil·la i per pensar</strong>. El nom "LUX" vol dir "llum" en llatí, una pista del seu nou estil.
+                </p>
+                
+                <p>
+                    Aquest nou projecte és molt profund. Segons s'ha explicat, <strong>‘LUX’ explora temes de la mística femenina, la transformació i l'espiritualitat</strong>. El disc traça un viatge que va des de la il·lusió fins a la pèrdua, i des de la fe fins a la individualitat. Serà un món íntim i ple de llum, molt diferent del que hem escoltat fins ara.
+                </p>
+                
+                <h2 class="section-title">Col·laboracions de Luxe</h2>
+
+                <p>
+                    I no estarà sola en aquest viatge. L'àlbum té <strong>col·laboracions increïbles</strong>. Hi participen veus femenines molt importants com <strong>Björk, Sílvia Pérez Cruz i l'Escolania de Montserrat</strong>. A més, també hi apareix la famosa <strong>Orquestra Simfònica de Londres</strong>. Això ens diu que la música serà molt gran i especial.
+                </p>
+
+                <h2 class="section-title">Les Cançons de 'LUX'</h2>
+                <ol class="tracklist">
+                    <li>Sexo, Violencia y Llantas</li>
+                    <li>Reliquia</li>
+                    <li>Divinize</li>
+                    <li>Porcelana</li>
+                    <li>Mio Cristo</li>
+                    <li>Berghain</li>
+                    <li>La Perla</li>
+                    <li>Mundo Nuevo</li>
+                    <li>De Madrugá</li>
+                    <li>Dios Es Un Stalker</li>
+                    <li>La Yugular</li>
+                    <li>Focu ‘ranni [Exclusiva]</li>
+                    <li>Sauvignon Blanc</li>
+                    <li>Jeanne [Exclusiva]</li>
+                    <li>Novia Robot [Exclusiva]</li>
+                    <li>La Rumba Del Perdón</li>
+                    <li>Memória</li>
+                    <li>Magnolias</li>
+                </ol>
+                
+                <h2 class="section-title">Un Disc Fet Sense Pors</h2>
+
+                <p>
+                    Rosalía ha dit una frase clau: <strong>"És el primer disc que faig sense por al fracàs"</strong>. Això vol dir que ha creat amb total llibertat, fent la música que de veritat volia fer. El 7 de novembre descobrirem com sona aquesta nova Rosalía, <strong>més personal i atrevida que mai</strong>.
+                </p>
+            </div>
+        </article>
+
+        <section id="quiz-section">
+            <h2 class="section-title">Exercicis de Comprensió</h2>
+            <form id="quiz-form">
+                
+                <h3 style="font-family: var(--sans-serif-font);">Preguntes Tipus Test</h3>
+                <div class="question-block">
+                    <p>1. Com es diu el nou disc de Rosalía?</p>
+                    <label><input type="radio" name="q1" value="a"> MOTOMAMI 2</label>
+                    <label><input type="radio" name="q1" value="b"> El Mal Querer</label>
+                    <label><input type="radio" name="q1" value="c"> LUX</label>
+                </div>
+                <div class="question-block">
+                    <p>2. Quina d'aquestes artistes NO col·labora al disc?</p>
+                    <label><input type="radio" name="q2" value="a"> Björk</label>
+                    <label><input type="radio" name="q2" value="b"> Shakira</label>
+                    <label><input type="radio" name="q2" value="c"> Sílvia Pérez Cruz</label>
+                </div>
+                <div class="question-block">
+                    <p>3. Quins temes explora principalment 'LUX'?</p>
+                    <label><input type="radio" name="q3" value="a"> La transformació i l'espiritualitat</label>
+                    <label><input type="radio" name="q3" value="b"> La festa i la fama</label>
+                    <label><input type="radio" name="q3" value="c"> L'amor i el desamor</label>
+                </div>
+                <div class="question-block">
+                    <p>4. Quina orquestra famosa participa a l'àlbum?</p>
+                    <label><input type="radio" name="q4" value="a"> Orquestra de Barcelona</label>
+                    <label><input type="radio" name="q4" value="b"> Orquestra Simfònica de Londres</label>
+                    <label><input type="radio" name="q4" value="c"> Orquestra Filharmònica de Viena</label>
+                </div>
+                 <div class="question-block">
+                    <p>5. Quina frase important ha dit Rosalía sobre aquest disc?</p>
+                    <label><input type="radio" name="q5" value="a"> "És el meu disc més comercial"</label>
+                    <label><input type="radio" name="q5" value="b"> "És el primer que faig sense por al fracàs"</label>
+                    <label><input type="radio" name="q5" value="c"> "És un retorn al flamenc pur"</label>
+                </div>
+                <div class="question-block">
+                    <p>6. Quina d'aquestes cançons apareix com a [Exclusiva] al tracklist?</p>
+                    <label><input type="radio" name="q6" value="a"> La Perla</label>
+                    <label><input type="radio" name="q6" value="b"> Mio Cristo</label>
+                    <label><input type="radio" name="q6" value="c"> Novia Robot</label>
+                </div>
+                <div class="question-block">
+                    <p>7. L'article compara el nou estil de 'LUX' amb el de quin altre disc?</p>
+                    <label><input type="radio" name="q7" value="a"> El Mal Querer</label>
+                    <label><input type="radio" name="q7" value="b"> Los Ángeles</label>
+                    <label><input type="radio" name="q7" value="c"> MOTOMAMI</label>
+                </div>
+
+                <h3 style="font-family: var(--sans-serif-font);">Vertader o Fals</h3>
+                <div class="question-block">
+                    <p>8. El nou disc segueix el mateix estil que MOTOMAMI.</p>
+                    <label><input type="radio" name="q8" value="true"> Vertader</label>
+                    <label><input type="radio" name="q8" value="false"> Fals</label>
+                </div>
+                 <div class="question-block">
+                    <p>9. El disc sortirà el 7 de desembre.</p>
+                    <label><input type="radio" name="q9" value="true"> Vertader</label>
+                    <label><input type="radio" name="q9" value="false"> Fals</label>
+                </div>
+                <div class="question-block">
+                    <p>10. Rosalía diu que ha fet aquest disc amb por al fracàs.</p>
+                    <label><input type="radio" name="q10" value="true"> Vertader</label>
+                    <label><input type="radio" name="q10" value="false"> Fals</label>
+                </div>
+                 <div class="question-block">
+                    <p>11. L'article està publicat a la revista "Rolling Stone".</p>
+                    <label><input type="radio" name="q11" value="true"> Vertader</label>
+                    <label><input type="radio" name="q11" value="false"> Fals</label>
+                </div>
+                 <div class="question-block">
+                    <p>12. Una de les cançons es diu "Magnolias".</p>
+                    <label><input type="radio" name="q12" value="true"> Vertader</label>
+                    <label><input type="radio" name="q12" value="false"> Fals</label>
+                </div>
+
+                <h3 style="font-family: var(--sans-serif-font);">Omple el buit</h3>
+                <div class="question-block">
+                    <p>13. El nom "LUX" vol dir <input type="text" id="q13"> en llatí.</p>
+                </div>
+                <div class="question-block">
+                    <p>14. Una col·laboració és l'Escolania de <input type="text" id="q14">.</p>
+                </div>
+                 <div class="question-block">
+                    <p>15. La cançó número 15 es diu "Novia <input type="text" id="q15">".</p>
+                </div>
+                <div class="question-block">
+                    <p>16. L'article diu que la nova Rosalía és més personal i <input type="text" id="q16"> que mai.</p>
+                </div>
+            </form>
+
+            <button id="submit-btn">Comprova les respostes</button>
+            <div id="results"></div>
+        </section>
+        
+        <section id="game-link-section">
+            <h2>Vols més? Prova el nostre joc!</h2>
+            <p>Posa a prova els teus coneixements sobre l'univers Rosalía.</p>
+            <a href="motomamivslux.html" target="_blank" class="game-button">Juga a MOTOMAMI vs LUX</a>
+        </section>
+
+    </div>
+
+    <script>
+        const submitButton = document.getElementById('submit-btn');
+        const resultsContainer = document.getElementById('results');
+        const quizForm = document.getElementById('quiz-form');
+
+        const correctAnswers = {
+            q1: 'c', q2: 'b', q3: 'a', q4: 'b', q5: 'b', q6: 'c', q7: 'c',
+            q8: 'false', q9: 'false', q10: 'false', q11: 'true', q12: 'true',
+            q13: 'llum', q14: 'montserrat', q15: 'robot', q16: 'atrevida'
+        };
+
+        submitButton.addEventListener('click', function() {
+            let score = 0;
+            const totalQuestions = Object.keys(correctAnswers).length;
+            
+            const allLabels = quizForm.querySelectorAll('label');
+            allLabels.forEach(label => label.classList.remove('correct', 'incorrect'));
+            const allTextInputs = quizForm.querySelectorAll('input[type="text"]');
+            allTextInputs.forEach(input => {
+                input.style.color = 'var(--text-color)';
+                input.style.borderBottomColor = '#ccc';
+            });
+
+            for (let i = 1; i <= 12; i++) {
+                const questionName = 'q' + i;
+                const selectedOption = document.querySelector(`input[name="${questionName}"]:checked`);
+                const questionBlock = document.querySelector(`input[name="${questionName}"]`).closest('.question-block');
+                const labels = questionBlock.querySelectorAll('label');
+
+                if (selectedOption) {
+                    if (selectedOption.value === correctAnswers[questionName]) {
+                        score++;
+                        selectedOption.parentElement.classList.add('correct');
+                    } else {
+                        selectedOption.parentElement.classList.add('incorrect');
+                        labels.forEach(label => {
+                            if (label.querySelector('input').value === correctAnswers[questionName]) {
+                                label.classList.add('correct');
+                            }
+                        });
+                    }
+                }
+            }
+
+            for (let i = 13; i <= 16; i++) {
+                const questionId = 'q' + i;
+                const inputElement = document.getElementById(questionId);
+                const userAnswer = inputElement.value.trim().toLowerCase();
+                
+                if (userAnswer === correctAnswers[questionId]) {
+                    score++;
+                    inputElement.style.color = 'var(--correct-color)';
+                    inputElement.style.borderBottomColor = 'var(--correct-color)';
+                } else {
+                    inputElement.style.color = 'var(--incorrect-color)';
+                    inputElement.style.borderBottomColor = 'var(--incorrect-color)';
+                }
+            }
+
+            resultsContainer.innerHTML = `La teva nota és: ${score} de ${totalQuestions}`;
+             if(score > totalQuestions / 2) {
+                resultsContainer.style.backgroundColor = '#e8f5e9';
+                resultsContainer.style.color = 'var(--correct-color)';
+            } else {
+                 resultsContainer.style.backgroundColor = '#ffebee';
+                resultsContainer.style.color = 'var(--incorrect-color)';
+            }
+        });
+    </script>
+</body>
+</html>
+

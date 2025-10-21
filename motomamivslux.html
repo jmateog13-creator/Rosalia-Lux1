@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ca">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joc: MOTOMAMI vs LUX</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Libre+Baskerville:wght@400;700&family=Montserrat:wght@700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --motomami-bg-start: #1a1a1a;
+            --motomami-bg-end: #d50000;
+            --motomami-text: #ffffff;
+
+            --lux-bg-start: #ffffff;
+            --lux-bg-mid: #e0f2f7;
+            --lux-bg-end: #ffeb3b;
+            --lux-text: #333333;
+            
+            --neutral-bg: #ffffff;
+            --correct-color: #4CAF50;
+            --incorrect-color: #F44336;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(90deg, var(--motomami-bg-start) 50%, var(--lux-bg-start) 50%);
+            overflow: hidden;
+            color: #333;
+        }
+
+        .screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            transition: opacity 0.5s ease;
+        }
+        
+        #start-screen {
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 20;
+        }
+        
+        #start-screen h1 {
+            font-family: 'Anton', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--motomami-bg-end);
+        }
+        #start-screen h1 span {
+            color: var(--lux-bg-end);
+        }
+
+        #start-screen .rules {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 2rem;
+            max-width: 500px;
+            line-height: 1.6;
+        }
+
+        #start-screen .disclaimer {
+            font-size: 0.9rem;
+            font-style: italic;
+            color: #777;
+            margin-top: 1.5rem;
+        }
+        
+        .game-button {
+            padding: 1rem 2.5rem;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: white;
+            background: linear-gradient(45deg, var(--motomami-bg-end), #e53935);
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(213, 0, 0, 0.4);
+        }
+        .game-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(213, 0, 0, 0.5);
+        }
+
+
+        .game-container {
+            width: 90vw;
+            max-width: 1000px;
+            height: 90vh;
+            max-height: 750px;
+            background: var(--neutral-bg);
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        
+        header {
+            text-align: center;
+            padding: 1rem 1.5rem 0.5rem 1.5rem;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            padding: 0.5rem 0;
+        }
+        
+        #timer {
+            background-color: #333;
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            font-family: 'Courier New', Courier, monospace;
+            letter-spacing: 2px;
+        }
+
+        #lives {
+            font-size: 1.5rem;
+            color: var(--motomami-bg-end);
+        }
+
+        .progress-bar-container {
+            width: 80%;
+            height: 10px;
+            background-color: #e0e0e0;
+            border-radius: 5px;
+            margin: 0 auto 1rem auto;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            width: 0%;
+            height: 100%;
+            background-color: var(--motomami-bg-end);
+            background-image: linear-gradient(to right, var(--motomami-bg-end), var(--lux-bg-end));
+            border-radius: 5px;
+            transition: width 0.3s ease-in-out;
+        }
+
+        main {
+            display: flex;
+            flex-grow: 1;
+        }
+
+        .drop-zone {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            padding: 2rem;
+            position: relative;
+        }
+
+        #motomami-zone {
+            background: linear-gradient(135deg, var(--motomami-bg-start) 0%, var(--motomami-bg-end) 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/concrete-wall.png'), linear-gradient(135deg, var(--motomami-bg-start) 0%, var(--motomami-bg-end) 100%);
+            background-blend-mode: multiply;
+            border-right: 4px dashed rgba(255,255,255,0.4);
+        }
+
+        #lux-zone {
+            background: linear-gradient(135deg, var(--lux-bg-start) 0%, var(--lux-bg-mid) 50%, var(--lux-bg-end) 100%);
+            background-image: url('https://www.transparenttextures.com/patterns/light-paper-fibers.png'), linear-gradient(135deg, var(--lux-bg-start) 0%, var(--lux-bg-mid) 50%, var(--lux-bg-end) 100%);
+            background-blend-mode: overlay;
+        }
+        
+        .zone-title {
+            font-family: 'Anton', sans-serif;
+            font-size: 3rem;
+            opacity: 0.25;
+            pointer-events: none;
+            text-transform: uppercase;
+        }
+        
+        #motomami-zone .zone-title {
+            color: var(--motomami-text);
+        }
+        
+        #lux-zone .zone-title {
+            font-family: 'Libre Baskerville', serif;
+            color: var(--lux-text);
+        }
+
+        .drag-area {
+            position: absolute;
+            width: 100%;
+            height: 150px;
+            left: 0;
+            bottom: 20%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            pointer-events: none;
+        }
+        
+        .adjective {
+            background-color: #fff;
+            padding: 1.5rem 3rem;
+            border-radius: 15px;
+            font-size: 2rem;
+            font-weight: 900;
+            cursor: grab;
+            user-select: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            pointer-events: all;
+            animation: fadeInScale 0.4s ease;
+        }
+        
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .adjective:active {
+            cursor: grabbing;
+            transform: scale(1.1);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.2);
+        }
+        
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 8rem;
+            font-weight: 900;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            pointer-events: none;
+            text-shadow: 0 0 20px rgba(0,0,0,0.2);
+        }
+
+        .feedback.show {
+            opacity: 0.8;
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        #end-screen {
+            background: rgba(255, 255, 255, 0.98);
+            z-index: 10;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        #end-screen h2 {
+            font-family: 'Anton', sans-serif;
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+        
+        #end-screen .score-details {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 1rem;
+        }
+        
+        #end-screen .total-score {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin-bottom: 1.5rem;
+        }
+
+        #final-message {
+             font-size: 1.2rem;
+             font-style: italic;
+             margin-bottom: 2rem;
+        }
+
+        #motomami-zone.drag-over { 
+            box-shadow: inset 0 0 0 8px rgba(255,255,255,0.7);
+            transform: scale(1.02);
+        }
+        #lux-zone.drag-over { 
+            box-shadow: inset 0 0 0 8px rgba(0,0,0,0.3);
+            transform: scale(1.02);
+        }
+    </style>
+</head>
+<body>
+    <div id="start-screen" class="screen">
+        <h1>MOTOMAMI <span>vs</span> LUX</h1>
+        <div class="rules">
+            <p><strong>Com funciona?</strong></p>
+            <p>Arrossega cada adjectiu a la caixa del disc que creus que descriu millor. Tens <strong>3 vides</strong> i <strong>5 minuts</strong>. Com més ràpid siguis, més punts extra guanyaràs!</p>
+            <p class="disclaimer">Hem suposat que el disc 'LUX' serà així... però potser Rosalía ens sorprèn. Qui sap?</p>
+        </div>
+        <button id="start-btn" class="game-button">Començar Joc</button>
+    </div>
+
+    <div class="game-container hidden">
+        <header>
+            <div class="stats-container">
+                <div id="lives">❤️❤️❤️</div>
+                <div id="timer">05:00</div>
+                <div id="score">Puntuació: 0</div>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress-bar"></div>
+            </div>
+        </header>
+
+        <main>
+            <div id="motomami-zone" class="drop-zone" data-album="motomami">
+                <h2 class="zone-title">MOTOMAMI</h2>
+            </div>
+            <div id="lux-zone" class="drop-zone" data-album="lux">
+                <h2 class="zone-title">LUX</h2>
+            </div>
+        </main>
+
+        <div class="drag-area">
+            <div id="current-adjective" class="adjective" draggable="true"></div>
+        </div>
+        
+        <div id="feedback" class="feedback"></div>
+    </div>
+    
+    <div id="end-screen" class="screen hidden">
+        <h2 id="end-title">Fi del joc!</h2>
+        <div class="score-details">
+            <span id="base-score-detail"></span><br>
+            <span id="bonus-score-detail"></span>
+        </div>
+        <p class="total-score" id="final-score"></p>
+        <p id="final-message"></p>
+        <button id="restart-btn" class="game-button">Tornar a jugar</button>
+    </div>
+
+    <script>
+        const adjectives = [
+            { word: 'Sorollós', album: 'motomami' }, { word: 'Espiritual', album: 'lux' },
+            { word: 'Ràpid', album: 'motomami' }, { word: 'Lluminós', album: 'lux' },
+            { word: 'Caòtic', album: 'motomami' }, { word: 'Tranquil', album: 'lux' },
+            { word: 'Industrial', album: 'motomami' }, { word: 'Blanc', album: 'lux' },
+            { word: 'Fosc', album: 'motomami' }, { word: 'Clàssic', album: 'lux' },
+            { word: 'Asfalt', album: 'motomami' }, { word: 'Elegant', album: 'lux' },
+            { word: 'Atrevit', album: 'motomami' }, { word: 'Suau', album: 'lux' },
+            { word: 'Metàl·lic', album: 'motomami' }, { word: 'Celestial', album: 'lux' },
+            { word: 'Urbà', album: 'motomami' }, { word: 'Profund', album: 'lux' },
+            { word: 'Vermell', album: 'motomami' }, { word: 'Místic', album: 'lux' }
+        ];
+
+        const GAME_DURATION = 300;
+        let shuffledAdjectives = [];
+        let currentAdjectiveIndex = 0;
+        let score = 0;
+        let lives = 3;
+        let timeLeft = GAME_DURATION;
+        let timerInterval = null;
+
+        const startScreenEl = document.getElementById('start-screen');
+        const startBtn = document.getElementById('start-btn');
+        const gameContainerEl = document.querySelector('.game-container');
+        const scoreEl = document.getElementById('score');
+        const timerEl = document.getElementById('timer');
+        const livesEl = document.getElementById('lives');
+        const progressBarEl = document.getElementById('progress-bar');
+        const adjectiveEl = document.getElementById('current-adjective');
+        const dropZones = document.querySelectorAll('.drop-zone');
+        const feedbackEl = document.getElementById('feedback');
+        const endScreenEl = document.getElementById('end-screen');
+        const endTitleEl = document.getElementById('end-title');
+        const baseScoreDetailEl = document.getElementById('base-score-detail');
+        const bonusScoreDetailEl = document.getElementById('bonus-score-detail');
+        const finalScoreEl = document.getElementById('final-score');
+        const finalMessageEl = document.getElementById('final-message');
+        const restartBtn = document.getElementById('restart-btn');
+
+        function shuffle(array) {
+            return [...array].sort(() => Math.random() - 0.5);
+        }
+
+        function initGame() {
+            startScreenEl.classList.remove('hidden');
+            gameContainerEl.classList.add('hidden');
+            endScreenEl.classList.add('hidden');
+        }
+
+        function startGame() {
+            startScreenEl.classList.add('hidden');
+            gameContainerEl.classList.remove('hidden');
+
+            shuffledAdjectives = shuffle(adjectives);
+            currentAdjectiveIndex = 0;
+            score = 0;
+            lives = 3;
+            timeLeft = GAME_DURATION;
+            
+            clearInterval(timerInterval);
+            timerInterval = setInterval(updateTimer, 1000);
+
+            adjectiveEl.style.display = 'block';
+            updateScoreAndProgress();
+            updateLivesDisplay();
+            displayNextAdjective();
+            updateTimerDisplay();
+        }
+
+        function updateTimer() {
+            timeLeft--;
+            updateTimerDisplay();
+            if (timeLeft <= 0) {
+                endGame('timeUp');
+            }
+        }
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            timerEl.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        }
+        
+        function updateLivesDisplay() {
+            livesEl.textContent = '❤️'.repeat(lives);
+        }
+
+        function displayNextAdjective() {
+            if (currentAdjectiveIndex < shuffledAdjectives.length) {
+                adjectiveEl.style.animation = 'none';
+                void adjectiveEl.offsetWidth;
+                adjectiveEl.style.animation = 'fadeInScale 0.4s ease';
+                adjectiveEl.textContent = shuffledAdjectives[currentAdjectiveIndex].word;
+                adjectiveEl.style.visibility = 'visible';
+            } else {
+                endGame('completed');
+            }
+        }
+        
+        function updateScoreAndProgress() {
+            scoreEl.textContent = `Puntuació: ${score}`;
+            const progress = (currentAdjectiveIndex / adjectives.length) * 100;
+            progressBarEl.style.width = `${progress}%`;
+        }
+
+        function showFeedback(isCorrect) {
+            feedbackEl.textContent = isCorrect ? '✅' : '❌';
+            feedbackEl.style.color = isCorrect ? 'var(--correct-color)' : 'var(--incorrect-color)';
+            feedbackEl.classList.add('show');
+            setTimeout(() => {
+                feedbackEl.classList.remove('show');
+            }, 600);
+        }
+
+        function endGame(reason) {
+            clearInterval(timerInterval);
+            adjectiveEl.style.visibility = 'hidden';
+            gameContainerEl.classList.add('hidden');
+            endScreenEl.classList.remove('hidden');
+
+            let bonusPoints = 0;
+            if (reason === 'completed') {
+                bonusPoints = timeLeft * 2;
+                endTitleEl.textContent = "Has completat el joc!";
+            } else if (reason === 'timeUp') {
+                endTitleEl.textContent = "S'ha acabat el temps!";
+            } else if (reason === 'noLives') {
+                 endTitleEl.textContent = "T'has quedat sense vides!";
+            }
+            
+            const totalScore = score + bonusPoints;
+
+            baseScoreDetailEl.textContent = `Punts per encerts: ${score}`;
+            bonusScoreDetailEl.textContent = `Bonus per temps: ${bonusPoints} (${reason === 'completed' ? timeLeft : 0}s x 2)`;
+            finalScoreEl.textContent = `Puntuació Total: ${totalScore}`;
+
+            if (totalScore > 300) {
+                finalMessageEl.textContent = "Impressionant! Ets un/a veritable expert/a en l'univers Rosalía.";
+            } else if (totalScore > 150) {
+                finalMessageEl.textContent = "Molt bé! Tens bon olfacte per la música de la Rosalía.";
+            } else {
+                finalMessageEl.textContent = "No està malament, però potser cal escoltar els discos un altre cop! ;)";
+            }
+        }
+
+        adjectiveEl.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', null);
+            setTimeout(() => e.target.style.visibility = 'hidden', 0);
+        });
+
+        adjectiveEl.addEventListener('dragend', (e) => {
+            if (currentAdjectiveIndex < shuffledAdjectives.length && lives > 0) {
+                e.target.style.visibility = 'visible';
+            }
+        });
+
+        dropZones.forEach(zone => {
+            zone.addEventListener('dragover', (e) => { e.preventDefault(); zone.classList.add('drag-over'); });
+            zone.addEventListener('dragleave', () => { zone.classList.remove('drag-over'); });
+            zone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                zone.classList.remove('drag-over');
+
+                const droppedAlbum = zone.dataset.album;
+                const correctAlbum = shuffledAdjectives[currentAdjectiveIndex].album;
+                const isCorrect = droppedAlbum === correctAlbum;
+
+                if (isCorrect) {
+                    score += 10;
+                } else {
+                    lives--;
+                    updateLivesDisplay();
+                }
+                
+                showFeedback(isCorrect);
+                
+                if (lives <= 0) {
+                    setTimeout(() => endGame('noLives'), 500);
+                    return;
+                }
+
+                currentAdjectiveIndex++;
+                updateScoreAndProgress();
+                setTimeout(displayNextAdjective, 300);
+            });
+        });
+        
+        startBtn.addEventListener('click', startGame);
+        restartBtn.addEventListener('click', initGame);
+
+        initGame();
+    </script>
+
+</body>
+</html>
